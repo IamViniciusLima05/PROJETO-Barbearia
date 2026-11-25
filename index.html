@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navalha Barbearia | Agendamento</title>
+  <meta name="description" content="Agende seu corte, barba e tratamentos na Navalha Barbearia em poucos cliques.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="topo__marca">
+      <svg class="poste" viewBox="0 0 24 64" aria-hidden="true">
+        <defs>
+          <pattern id="listras" width="24" height="16" patternUnits="userSpaceOnUse" patternTransform="skewY(-30)">
+            <rect width="24" height="16" fill="#f4f1ea"/>
+            <rect width="24" height="5" fill="#c8323c"/>
+            <rect y="8" width="24" height="5" fill="#1f4e8c"/>
+          </pattern>
+        </defs>
+        <rect x="2" y="0" width="20" height="6" rx="3" fill="#c9a15b"/>
+        <rect x="4" y="6" width="16" height="52" rx="2" fill="url(#listras)"/>
+        <rect x="2" y="58" width="20" height="6" rx="3" fill="#c9a15b"/>
+      </svg>
+      <div>
+        <strong>Navalha</strong>
+        <span>Barbearia desde 2012</span>
+      </div>
+    </div>
+    <nav class="abas" role="tablist" aria-label="Seções">
+      <button class="aba ativa" role="tab" aria-selected="true" data-aba="agendar">Agendar</button>
+      <button class="aba" role="tab" aria-selected="false" data-aba="meus">Meus horários <span class="contador" id="contador">0</span></button>
+      <button class="aba" role="tab" aria-selected="false" data-aba="painel">Painel do barbeiro</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ===== AGENDAR ===== -->
+    <section id="agendar" class="painel ativo" role="tabpanel">
+      <div class="hero">
+        <h1>Seu horário na cadeira, sem fila e sem ligação.</h1>
+        <p>Escolha o serviço, o barbeiro e o horário. A confirmação chega na hora.</p>
+      </div>
+
+      <div class="grade">
+        <form id="form-agenda" class="passos" novalidate>
+          <fieldset class="passo">
+            <legend><span class="num">1</span> Serviços</legend>
+            <p class="dica">Pode escolher mais de um.</p>
+            <div class="lista-servicos" id="lista-servicos"></div>
+          </fieldset>
+
+          <fieldset class="passo">
+            <legend><span class="num">2</span> Barbeiro</legend>
+            <div class="lista-barbeiros" id="lista-barbeiros"></div>
+          </fieldset>
+
+          <fieldset class="passo">
+            <legend><span class="num">3</span> Dia</legend>
+            <div class="dias" id="dias"></div>
+          </fieldset>
+
+          <fieldset class="passo">
+            <legend><span class="num">4</span> Horário</legend>
+            <div class="horarios" id="horarios"></div>
+          </fieldset>
+
+          <fieldset class="passo">
+            <legend><span class="num">5</span> Seus dados</legend>
+            <div class="campos">
+              <label>Nome
+                <input type="text" id="nome" autocomplete="name" placeholder="Como podemos te chamar?" required>
+              </label>
+              <label>WhatsApp
+                <input type="tel" id="telefone" autocomplete="tel" placeholder="(51) 99999-9999" required>
+              </label>
+              <label class="largo"><span>Observação <small>(opcional)</small></span>
+                <input type="text" id="obs" maxlength="120" placeholder="Ex.: degradê baixo, barba só alinhar">
+              </label>
+            </div>
+          </fieldset>
+        </form>
+
+        <aside class="resumo" aria-live="polite">
+          <h2>Resumo</h2>
+          <dl id="resumo-lista">
+            <div><dt>Serviços</dt><dd id="r-servicos">—</dd></div>
+            <div><dt>Barbeiro</dt><dd id="r-barbeiro">—</dd></div>
+            <div><dt>Quando</dt><dd id="r-quando">—</dd></div>
+            <div><dt>Duração</dt><dd id="r-duracao">—</dd></div>
+          </dl>
+          <div class="total"><span>Total</span><strong id="r-total">R$ 0,00</strong></div>
+          <p class="erro" id="erro" role="alert"></p>
+          <button type="submit" form="form-agenda" class="btn btn--principal" id="btn-confirmar">Confirmar agendamento</button>
+          <p class="pequeno">Pagamento na barbearia: Pix, cartão ou dinheiro.</p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ===== MEUS HORÁRIOS ===== -->
+    <section id="meus" class="painel" role="tabpanel" hidden>
+      <h1 class="titulo-secao">Meus horários</h1>
+      <p class="dica">Agendamentos feitos neste aparelho.</p>
+      <div id="lista-meus" class="lista-cartoes"></div>
+    </section>
+
+    <!-- ===== PAINEL DO BARBEIRO ===== -->
+    <section id="painel" class="painel" role="tabpanel" hidden>
+      <div class="painel-topo">
+        <h1 class="titulo-secao">Agenda do dia</h1>
+        <label class="seletor-data">Dia
+          <input type="date" id="data-painel">
+        </label>
+      </div>
+      <div class="estatisticas" id="estatisticas"></div>
+      <div class="agenda-colunas" id="agenda-colunas"></div>
+      <p class="pequeno">Horários em cinza são de clientes que agendaram por telefone (exemplo de demonstração).</p>
+    </section>
+  </main>
+
+  <!-- ===== MODAL DE CONFIRMAÇÃO ===== -->
+  <dialog id="modal" class="modal">
+    <div class="modal__selo">✓</div>
+    <h2>Horário confirmado!</h2>
+    <p id="modal-texto"></p>
+    <p class="codigo">Código <strong id="modal-codigo"></strong></p>
+    <div class="modal__acoes">
+      <a id="modal-whats" class="btn btn--whats" target="_blank" rel="noopener">Avisar no WhatsApp</a>
+      <button class="btn btn--secundario" id="modal-fechar">Fechar</button>
+    </div>
+  </dialog>
+
+  <footer class="rodape">
+    <p>Navalha Barbearia · Rua Exemplo, 123 · Seg a Sáb, 9h às 20h</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
